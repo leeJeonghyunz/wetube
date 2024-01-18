@@ -1,6 +1,7 @@
 extends base.pug
 
 block content 
-    h3 #{video.views} #{video.views === 1 ? "view": "views"}
-    //- 삼항 연산자를 이용하여 view와 views 구분
-    a(href=`${video.id}/edit`) Edit Video &rarr;
+    div
+        p=video.description 
+        small=video.createdAt
+    a(href=`${video.id}/edit`)   Edit Video &rarr;

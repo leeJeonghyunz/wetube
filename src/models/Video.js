@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const videoSchema = new mongoose.Schema({
   // 스키마 작성
-  title: String,
-  description: String,
+  title: { type: String, required: true, trim: true, maxLength: 30 },
+  description: { type: String, required: true, trim: true, minLength: 20 },
   createdAt: { type: Date, required: true, default: Date.now },
   // create값을 contoller에 생성하지 않고 default 값으로 생성
-  hashtags: [{ type: String }],
+  hashtags: [{ type: String, trim: true }],
   meta: {
     views: { type: Number, default: 0, required: true },
     rating: { type: Number, default: 0, required: true },
