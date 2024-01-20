@@ -1,6 +1,7 @@
 // 파일들을 초기화
 import "./db";
-import movieModel from "./models/Video";
+import "./models/Video";
+import "./models/User";
 import app from "./server";
 
 const PORT = 4000;
