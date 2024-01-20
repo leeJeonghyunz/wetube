@@ -14,7 +14,7 @@ export const watch = async (req, res) => {
   const { id } = req.params;
   const video = await Video.findById(id); // id를 통해 video를 검색
   if (!video) {
-    res.render("404", { pageTitle: "Video not found" }); // video가 없을시 404 렌더링
+    res.status(404).render("404", { pageTitle: "Video not found" }); // video가 없을시 404 렌더링
   } else {
     res.render("watch", { pageTitle: video.title, video });
   }
@@ -64,7 +64,7 @@ export const postUpload = async (req, res) => {
     res.redirect("/");
   } catch (error) {
     console.log(error);
-    return res.render("upload", {
+    return res.status(400).render("upload", {
       pageTitle: "Upload Video",
       errorMessage: error._message,
     });

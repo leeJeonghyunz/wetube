@@ -5,7 +5,32 @@ export const getJoin = (req, res) => {
 };
 
 export const postJoin = async (req, res) => {
-  const { name, username, email, password, location } = req.body;
+  const { name, username, email, password, password2, location } = req.body;
+  const pageTitle = "Join";
+
+  if (password !== password2) {
+    return res.status(400).render("join", {
+      pageTitle,
+      errorMessage: "Password confirmation deos not match.",
+    });
+  } // 패스워드 일치 여부
+
+  const usernameExist = await User.exists({ username });
+  if (usernameExist) {
+    return res.status(400).render("join", {
+      pageTitle,
+      errorMessage: "The user name is already taken.",
+    });
+  } // username이 존재한다면 errorMessage return
+
+  const emailExist = await User.exists({ email });
+  if (emailExist) {
+    return res.status(400).render("join", {
+      pageTitle,
+      errorMessage: "The Email is already taken.",
+    });
+  } // email이 존재한다면 errorMessage return
+
   await User.create({
     name,
     username,
