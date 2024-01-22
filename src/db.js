@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-mongoose.connect("mongodb://127.0.0.1:27017/wetube"); // mongodb의 db를 만드는 방법. url뒤에 / 를 입력하고 db이름 입력
+mongoose.connect(process.env.DB_URL); // mongodb의 db를 만드는 방법. url뒤에 / 를 입력하고 db이름 입력
 
 const db = mongoose.connection;
 
