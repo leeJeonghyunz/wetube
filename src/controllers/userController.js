@@ -26,6 +26,7 @@ export const postJoin = async (req, res) => {
 
   const emailExist = await User.exists({ email });
   if (emailExist) {
+    // db에 계정이 있다면 사용
     return res.status(400).render("join", {
       pageTitle,
       errorMessage: "The Email is already taken.",
@@ -123,19 +124,117 @@ export const finishGithubLogin = async (req, res) => {
         }, // github에 accessToken을 보여주고 email list를 받아옴.
       })
     ).json();
-    const email = emailData.find(
+    const emailObj = emailData.find(
       (email) => email.primary === true && email.verified === true
-    );
-    console.log(email);
-    if (!email) {
+    ); // primary와 verified가 true인 것을 찾음
+    if (!emailObj) {
       return res.redirect("/login");
     }
+    const existingUser = await User.findOne({ email: emailObj.email }); // db에 emailObj.email(깃헙이메일)과 같은 것이 있는지 확인
+    if (existingUser) {
+      req.session.loggedIn = true; // session obj에 login true로 변경
+      req.session.user = existingUser; // session obj에 existingUser 삽입
+      return res.redirect("/");
+    } else {
+      // 만약 계정이 없다면? 만든다.
+      const user = await User.create({
+        name: userData.name,
+        avatarUrl: userData.avatar_url,
+        username: userData.login,
+        email: emailObj.email,
+        socialOnly: true,
+        password: "", // github login을 하면 password를 입력할 수 없다.
+        location: userData.location,
+      });
+      req.session.loggedIn = true; // session obj에 login true로 변경
+      req.session.user = user; // session obj에 user 삽입
+      return res.redirect("/");
+    }
   } else {
-    return res.redirect("/login");
+    return res.redirect("/");
   }
 };
 
-export const edit = (req, res) => res.send("Edit User");
-export const remove = (req, res) => res.send("Remove User");
-export const logout = (req, res) => res.send("Logout");
-export const see = (req, res) => res.send("See User");
+export const logout = (req, res) => {
+  req.session.destroy(); // 세션을 끝내버림
+  return res.redirect("/");
+};
+
+export const getEdit = (req, res) => {
+  return res.render("edit-profile", {
+    pageTitle: "Edit Profile",
+  });
+};
+
+export const postEdit = async (req, res) => {
+  const pageTitle = "Edit";
+  const {
+    session: {
+      user: { _id },
+    },
+    body: { name, email, username, location }, // form의 name, email, username, location
+  } = req;
+
+  // user를 찾는다.
+  // const findUserName = await User.findOne({ username });
+
+  // const findUserEmail = await User.findOne({ email });
+  // // console.log(findUsername);
+  // // console.log("sessoin", req.session);
+  // // console.log("ID:", findUsername._id.toString());
+
+  // if (!findUserName || !findUserEmail) {
+  //   const updateUser = await User.findByIdAndUpdate(
+  //     _id,
+  //     {
+  //       name,
+  //       email,
+  //       username,
+  //       location,
+  //     },
+  //     { new: true } // findByIdAndUpdate는 기본적으로 이전 값을 반환하므로 new:true 입력해야한다.
+  //   ); // user를 id로 찾고 업데이트
+  //   req.session.user = updateUser; // req.session에 update된 user입력
+  //   return res.redirect("/users/edit");
+  // }
+
+  // const a = Boolean(findUserName._id.toString() === _id.toString());
+  // const b = Boolean(findUserEmail._id.toString() === _id.toString());
+
+  // if (!a || !b) {
+  //   return res.render("edit-profile", {
+  //     pageTitle,
+  //     errorMessage: "Information is existing",
+  //   });
+  // } else {
+  // }
+
+  // 1.이름을 바꿨을때 해당 이름의 유저가 있는지 확인한다.
+  const findUserName = await User.findOne({ username });
+
+  if (findUserName && Boolean(findUserName._id.toString() === _id.toString())) {
+    // Redirect to the home page or any other desired URL
+    return res.redirect("/");
+  }
+
+  if (findUserName) {
+    return res.render("edit-profile", {
+      pageTitle,
+      errorMessage: `Name ${findUserName.username}Already Existing`,
+    });
+  }
+
+  const updateUser = await User.findByIdAndUpdate(
+    _id,
+    {
+      name,
+      email,
+      username,
+      location,
+    },
+    { new: true } // findByIdAndUpdate는 기본적으로 이전 값을 반환하므로 new:true 입력해야한다.
+  ); // user를 id로 찾고 업데이트
+  req.session.user = updateUser; // req.session에 update된 user입력
+
+  return res.redirect("/users/edit");
+};
