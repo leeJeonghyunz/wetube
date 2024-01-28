@@ -12,6 +12,8 @@ const videoSchema = new mongoose.Schema({
     views: { type: Number, default: 0, required: true },
     rating: { type: Number, default: 0, required: true },
   },
+  owner: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
+  // owner의 타입을 ObjectID로 설정하며, User 모델의 ID를 저장할 것이라 선언.
 });
 
 videoSchema.static("formatHashtags", (hashtags) => {

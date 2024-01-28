@@ -1,0 +1,18 @@
+extends ../base.pug
+
+block content 
+    video(src="/"+video.fileUrl controls)
+    //- controls를 이용하여 컨트롤 생성
+    div
+        p=video.description 
+        small=video.createdAt
+    div     
+        small Uploaded By 
+            a(href=`/users/${video.owner._id}`)  #{video.owner.name}
+    br
+    if String(video.owner._id) === String(loggedInUser._id)
+        //- 둘이 형식이 다르므로 String으로 통일
+        a(href=`${video.id}/edit`)   Edit Video &rarr;
+        br
+        br
+        a(href=`${video.id}/delete`)   Delete Video &rarr;
