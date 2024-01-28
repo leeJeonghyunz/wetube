@@ -1,12 +1,19 @@
-extends base
+extends ../base
 
 block content 
+    img(src='/'+loggedInUser.avatarUrl, alt="" width="100", height="100")
     if errorMessage 
         span=errorMessage
-    form(method="POST") 
+    form(method="POST" enctype="multipart/form-data")  
+        //-form을 multer를 사용하기 위해 multipart/form-data로 인코딩
+        label(for="avatar") Avatar
+        input(type="file", id='avatar', name="avatar" accept='image/*')
         input( name="username", type="text", required, placeholder="User name" value=loggedInUser.username)
         input( name="name", type="text", required, placeholder="name" value=loggedInUser.name)
         //- locals에 로그인 유저를 입력했기에 업데이트 시  템플릿에 따로 user를 보내지 않아도 된다.
         input( name="email", type="email", required, placeholder="email" value=loggedInUser.email)
         input( name="location", type="text", placeholder="location" value=loggedInUser.location)
         input(type="submit" value="Update profile")
+        if !loggedInUser.socialOnly
+            hr
+            a(href="change-password") Change Password 

@@ -1,3 +1,5 @@
+import multer from "multer";
+
 export const localMiddleware = (req, res, next) => {
   res.locals.loggedIn = Boolean(req.session.loggedIn); // req.session.loggedin 값을 locals.loggedIn 값에 전달
   res.locals.siteName = "wetube";
@@ -22,3 +24,17 @@ export const publicOnlyMiddleware = (req, res, next) => {
     return res.redirect("/");
   }
 }; // 만약 로그인 한 사람이 접속하면 홈으로 redirect
+
+export const avatarUpload = multer({
+  dest: "uploads/avatars", // 파일 저장 경로
+  limits: {
+    fileSize: 3000000, // 파일 크기 제한
+  },
+}); // 사용자가 보낸 파일을 uploads 폴더에 저장한다.
+
+export const videoUpload = multer({
+  dest: "uploads/videos",
+  limits: {
+    fileSize: 10000000,
+  },
+});

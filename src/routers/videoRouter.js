@@ -7,7 +7,7 @@ import {
   postUpload,
   deleteVideo,
 } from "../controllers/videoController";
-import { protectorMiddleware } from "../middleware";
+import { protectorMiddleware, videoUpload } from "../middleware";
 
 const videoRouter = express.Router();
 
@@ -15,7 +15,7 @@ videoRouter
   .route("/upload")
   .all(protectorMiddleware)
   .get(getUpload)
-  .post(postUpload);
+  .post(videoUpload.single("video"), postUpload);
 videoRouter.get("/:id([0-9a-f]{24})", watch); // mongoDB의 정규표현식
 videoRouter
   .route("/:id([0-9a-f]{24})/edit")

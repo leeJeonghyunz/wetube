@@ -161,7 +161,7 @@ export const logout = (req, res) => {
 };
 
 export const getEdit = (req, res) => {
-  return res.render("edit-profile", {
+  return res.render("users/edit-profile", {
     pageTitle: "Edit Profile",
   });
 };
@@ -170,55 +170,32 @@ export const postEdit = async (req, res) => {
   const pageTitle = "Edit";
   const {
     session: {
-      user: { _id },
+      user: { _id, avatarUrl },
     },
     body: { name, email, username, location }, // form의 name, email, username, location
+    file,
   } = req;
-
-  // user를 찾는다.
-  // const findUserName = await User.findOne({ username });
-
-  // const findUserEmail = await User.findOne({ email });
-  // // console.log(findUsername);
-  // // console.log("sessoin", req.session);
-  // // console.log("ID:", findUsername._id.toString());
-
-  // if (!findUserName || !findUserEmail) {
-  //   const updateUser = await User.findByIdAndUpdate(
-  //     _id,
-  //     {
-  //       name,
-  //       email,
-  //       username,
-  //       location,
-  //     },
-  //     { new: true } // findByIdAndUpdate는 기본적으로 이전 값을 반환하므로 new:true 입력해야한다.
-  //   ); // user를 id로 찾고 업데이트
-  //   req.session.user = updateUser; // req.session에 update된 user입력
-  //   return res.redirect("/users/edit");
-  // }
-
-  // const a = Boolean(findUserName._id.toString() === _id.toString());
-  // const b = Boolean(findUserEmail._id.toString() === _id.toString());
-
-  // if (!a || !b) {
-  //   return res.render("edit-profile", {
-  //     pageTitle,
-  //     errorMessage: "Information is existing",
-  //   });
-  // } else {
-  // }
 
   // 1.이름을 바꿨을때 해당 이름의 유저가 있는지 확인한다.
   const findUserName = await User.findOne({ username });
 
-  if (findUserName && Boolean(findUserName._id.toString() === _id.toString())) {
-    // Redirect to the home page or any other desired URL
+  const a = findUserName
+    ? Boolean(findUserName._id.toString() === _id.toString())
+    : null;
+  const b = Boolean(req.body.username === req.session.user.username);
+  const c = Boolean(req.body.email === req.session.user.email);
+  const d = Boolean(req.body.name === req.session.user.name);
+  const e = Boolean(req.body.location === req.session.user.location);
+
+  // 2.1 만약 유저가 존재하고 유저의 ID와 현재 세션의 ID가 같다면(아무것도 입력 안하고 post) 홈으로 redirect
+  if (findUserName && a && b && c && d && e) {
+    console.log("변경사항이 없습니다.");
     return res.redirect("/");
   }
 
-  if (findUserName) {
-    return res.render("edit-profile", {
+  // 2.2 만약 중복된 이름이 존재할 시(유저id와 세션id가 다를 때.)
+  if (findUserName && !a) {
+    return res.render("users/edit-profile", {
       pageTitle,
       errorMessage: `Name ${findUserName.username}Already Existing`,
     });
@@ -227,6 +204,7 @@ export const postEdit = async (req, res) => {
   const updateUser = await User.findByIdAndUpdate(
     _id,
     {
+      avatarUrl: file ? file.path : avatarUrl, // avatarUrl에 새로 입력값이 없으면 기존의 avatarUrl을 작성하고 아니면 path의 내용을 입력
       name,
       email,
       username,
@@ -237,4 +215,53 @@ export const postEdit = async (req, res) => {
   req.session.user = updateUser; // req.session에 update된 user입력
 
   return res.redirect("/users/edit");
+};
+
+export const getChangePassword = (req, res) => {
+  return res.render("users/change-password", { pageTitle: "ChangePassword " });
+};
+
+export const postChangePassword = async (req, res) => {
+  const {
+    session: {
+      user: { _id, password },
+    },
+    body: { oldPassword, newPassword, newPasswordConfirmation },
+  } = req;
+
+  // 1.현재 비밀번호 확인
+  const ok = await bcrypt.compare(oldPassword, password); // bcrypt를 이용해서 oldPassword와 session에 있는 password를 비교
+  if (!ok) {
+    return res.status(400).render("users/change-password", {
+      pageTitle: "ChangePassword ",
+      errorMessage: "The current password is incorrect",
+    });
+  }
+
+  // 2.변경된 비밀번호 재확인
+  if (newPassword !== newPasswordConfirmation) {
+    return res.status(400).render("users/change-password", {
+      pageTitle: "ChangePassword ",
+      errorMessage: "The password does not match the confirmation",
+    });
+  }
+
+  // 3. 변경된 비밀번호 저장
+  const user = await User.findById(_id);
+  user.password = newPassword;
+  await user.save(); // 비밀번호 저장
+  req.session.user.password = user.password; // session에 바뀐 비밀번호 입력
+  return res.redirect("/users/logout");
+};
+
+export const see = async (req, res, next) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  if (!user) {
+    res.status(404).render("404", { pageTitle: "User Not Found" });
+  }
+  return res.render("users/profile", {
+    pageTitle: `${user.name} Profile`,
+    user,
+  });
 };

@@ -26,7 +26,7 @@ export const getEdit = async (req, res) => {
   if (!video) {
     res.render("404", { pageTitle: "Video not found" }); // video가 없을시 404 렌더링
   }
-  return res.render("edit", { pageTitle: `Edit ${video.title}`, video });
+  return res.render("videos/edit", { pageTitle: `Edit ${video.title}`, video });
 };
 
 export const postEdit = async (req, res) => {
@@ -46,11 +46,12 @@ export const postEdit = async (req, res) => {
 };
 
 export const getUpload = (req, res) => {
-  return res.render("upload", { pageTitle: "Upload Video" });
+  return res.render("videos/upload", { pageTitle: "Upload Video" });
 };
 
 export const postUpload = async (req, res) => {
   // here we will add a video
+  const file = req.file;
   const { title, description, hashtags } = req.body;
   try {
     await Video.create({
@@ -58,13 +59,14 @@ export const postUpload = async (req, res) => {
       title,
       description,
       createdAt: Date.now(),
+      fileUrl: file.path,
       hashtags: Video.formatHashtags(hashtags),
       // Video model에서 만든 formatHashtags 함수를 import
     });
     res.redirect("/");
   } catch (error) {
     console.log(error);
-    return res.status(400).render("upload", {
+    return res.status(400).render("videos/upload", {
       pageTitle: "Upload Video",
       errorMessage: error._message,
     });
