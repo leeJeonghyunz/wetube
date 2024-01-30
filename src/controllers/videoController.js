@@ -102,7 +102,6 @@ export const deleteVideo = async (req, res) => {
 
   // 만약 video의 owner가 아닌 사람이 edit창을 열려고 하는 것을 방지/=.
   if (String(video.owner) !== _id) {
-    console.log("fail");
     return res.status(403).redirect("/");
   }
 

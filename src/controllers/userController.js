@@ -7,7 +7,9 @@ export const getJoin = (req, res) => {
 };
 
 export const postJoin = async (req, res) => {
-  const { name, username, email, password, password2, location } = req.body;
+  const { file } = req;
+  const { name, username, email, password, password2, location, avatarUrl } =
+    req.body;
   const pageTitle = "Join";
 
   if (password !== password2) {
@@ -40,6 +42,7 @@ export const postJoin = async (req, res) => {
       email,
       password,
       location,
+      avatarUrl: file ? file.path : "uploads/avatars/et.jpg", // 이미지 지정 안했을 시 기본이미지.
     });
     return res.redirect("/login");
     // user를 생성하고 login으로 redirect
@@ -176,6 +179,7 @@ export const postEdit = async (req, res) => {
     body: { name, email, username, location }, // form의 name, email, username, location
     file,
   } = req;
+  const filePath = file ? file.path : null; // file이 있다면 filePath에 삽입
 
   // 1.이름을 바꿨을때 해당 이름의 유저가 있는지 확인한다.
   const findUserName = await User.findOne({ username });
@@ -187,9 +191,10 @@ export const postEdit = async (req, res) => {
   const c = Boolean(req.body.email === req.session.user.email);
   const d = Boolean(req.body.name === req.session.user.name);
   const e = Boolean(req.body.location === req.session.user.location);
+  const f = Boolean(filePath === avatarUrl);
 
   // 2.1 만약 유저가 존재하고 유저의 ID와 현재 세션의 ID가 같다면(아무것도 입력 안하고 post) 홈으로 redirect
-  if (findUserName && a && b && c && d && e) {
+  if (findUserName && a && b && c && d && e && f) {
     console.log("변경사항이 없습니다.");
     return res.redirect("/");
   }

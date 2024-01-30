@@ -26,6 +26,7 @@ app.use(
 
 app.use(localMiddleware);
 app.use("/uploads", express.static("uploads")); // express.static()을 사용하여 디렉토리 접근 권한 제공
+app.use("/assets", express.static("assets")); // express.static()을 사용하여 디렉토리 접근 권한 제공
 app.use("/", rootRouter); // rootRouter 생성
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);

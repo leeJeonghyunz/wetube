@@ -6,12 +6,16 @@ import {
   postLogin,
 } from "../controllers/userController";
 import { search, home } from "../controllers/videoController";
-import { publicOnlyMiddleware } from "../middleware";
+import { avatarUpload, publicOnlyMiddleware } from "../middleware";
 
 const rootRouter = express.Router();
 
 rootRouter.get("/", home);
-rootRouter.route("/join").all(publicOnlyMiddleware).get(getJoin).post(postJoin);
+rootRouter
+  .route("/join")
+  .all(publicOnlyMiddleware)
+  .get(getJoin)
+  .post(avatarUpload.single("avatar"), postJoin);
 rootRouter
   .route("/login")
   .all(publicOnlyMiddleware)
