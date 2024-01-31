@@ -3,7 +3,9 @@ import User from "../models/User";
 
 export const home = async (req, res) => {
   try {
-    const videos = await Video.find({}).sort({ createdAt: "desc" });
+    const videos = await Video.find({})
+      .sort({ createdAt: "desc" })
+      .populate("owner");
     // createdAt 순서대로 내림차순
     return res.render("home", { pageTitle: "Home", videos });
   } catch {
@@ -117,7 +119,7 @@ export const search = async (req, res) => {
     videos = await Video.find({
       title: { $regex: new RegExp(keyword, "i") },
       // MongoDB 정규표현식을 이용하여 키워드가 들어가 있는 것을 찾음
-    });
+    }).populate("owner");
   }
   // keyword가 있으면 videos에 넣어주고 렌더링
   return res.render("search", { pageTitle: "Search", videos });

@@ -1,35 +1,14 @@
 doctype html 
+//- 반드시 doctype 입력
 html(lang="ko")
     html
         title #{pageTitle} | Wetube
         //- pageTitle과 Wetube란 글자가 같이 혼용되었기에 위에처럼 밸류입력
-    link(rel="stylesheet" href="https://unpkg.com/mvp.css")
     link(rel="stylesheet" href="/assets/css/styles.css")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css")
+        //- fontawsome을 cdnjs library에서 다운
     body 
-        header
-            h1=pageTitle
-            //- 변수만 입력되었기에 '='만 입력
-            nav 
-                ul 
-                    li 
-                        a(href="/") Home    
-                    if loggedIn
-                        li 
-                            a(href="/users/edit") Edit Profile
-                        li 
-                            a(href="/users/logout") Log out
-                        li 
-                            a(href=`/users/${loggedInUser._id}`) My Profile
-                        li 
-                            a(href="/videos/upload") Upload Video                            
-                    else 
-                        li 
-                            a(href="/login") Login        
-                        li 
-                            a(href="/join") Join                        
-                    li 
-                        a(href="/search") Search    
-
+        include partials/header
         main
             block content
         include partials/footer.pug

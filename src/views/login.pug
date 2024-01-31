@@ -7,11 +7,8 @@ block content
         input( name="username", type="text", required, placeholder="User name")
         input( name="password", type="password", required, placeholder="password")
         input(type="submit", value="Login")
-        br
-        a(href="/users/github/start") Continue with Github &rarr;
-        //-깃헙로그인 생성 / url+ clientID=ID
-    hr
-    div 
+        include partials/social-login
+    div.auth-switch
         span Don't have an account? 
         a(href="/join")  Join now!
 
