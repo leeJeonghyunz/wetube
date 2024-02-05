@@ -9,7 +9,8 @@ form {
   }
 }
 
-input {
+input:not([type="range"]) {
+  // range 타입은 x
   all: unset;
   padding: 15px 20px;
   border-radius: 5px;

@@ -1,18 +1,43 @@
 extends ../base.pug
 
 block content 
-    video(src="/"+video.fileUrl controls)
-    //- controls를 이용하여 컨트롤 생성
-    div
-        p=video.description 
-        small=video.createdAt
-    div     
-        small Uploaded By 
-            a(href=`/users/${video.owner._id}`)  #{video.owner.name}
-    br
-    if String(video.owner._id) === String(loggedInUser._id)
-        //- 둘이 형식이 다르므로 String으로 통일
-        a(href=`${video.id}/edit`)   Edit Video &rarr;
-        br
-        br
-        a(href=`${video.id}/delete`)   Delete Video &rarr;
+    div#videoContainer
+        video(src="/"+video.fileUrl )
+        //- controls를 이용하여 컨트롤 생성
+        div#videoController
+            div#playBtnDiv
+                div#play 
+                    i.fas.fa-play
+            div#timeDiv
+                div 
+                    span#currentTime 00:00
+                    span  / 
+                    span#totalTime 00:00
+                div#timelineDiv
+                    input(type="range", step="1", min="0", value="0" )#timeline
+            div#soundDiv
+                div#mute 
+                    i.fas.fa-volume-xmark
+                input(type="range", step="0.1", min="0", max="1", value=0.5 )#volume
+            div 
+                div#fullScreen
+                    i.fas.fa-expand
+
+
+    
+    //- div
+    //-     p=video.description 
+    //-     small=video.createdAt
+    //- div     
+    //-     small Uploaded By 
+    //-         a(href=`/users/${video.owner._id}`)  #{video.owner.name}
+    //- br
+    //- if String(video.owner._id) === String(loggedInUser._id)
+    //-     //- 둘이 형식이 다르므로 String으로 통일
+    //-     a(href=`${video.id}/edit`)   Edit Video &rarr;
+    //-     br
+    //-     br
+    //-     a(href=`${video.id}/delete`)   Delete Video &rarr;
+
+block scripts 
+    script(src="/assets/js/videoPlayer.js") 
