@@ -1,7 +1,8 @@
 extends ../base.pug
 
 block content 
-    div#videoContainer
+    div#videoContainer(data-id=video._id)
+        //- data attribute 생성
         video(src="/"+video.fileUrl )
         //- controls를 이용하여 컨트롤 생성
         div#videoController

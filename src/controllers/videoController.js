@@ -67,7 +67,10 @@ export const postUpload = async (req, res) => {
   const {
     user: { _id },
   } = req.session;
-  const file = req.file;
+  const { video, thumb } = req.files;
+
+  console.log("*****video****", video);
+  console.log("*****thumb****", thumb);
   const { title, description, hashtags } = req.body;
   try {
     const newVideo = await Video.create({
@@ -75,7 +78,8 @@ export const postUpload = async (req, res) => {
       title,
       description,
       createdAt: Date.now(),
-      fileUrl: file.path,
+      fileUrl: video[0].path, // req.files.video의 path
+      thumbUrl: thumb[0].path.replace(/[\\]/g, "/"), // req.files.thumb의 path
       hashtags: Video.formatHashtags(hashtags), // Video model에서 만든 formatHashtags 함수를 import
       owner: _id, // video의 owner 파악
     });
@@ -126,3 +130,15 @@ export const search = async (req, res) => {
 };
 
 export const upload = (req, res) => res.send("Upload");
+
+// 조회수 생성
+export const registerView = async (req, res) => {
+  const { id } = req.params;
+  const video = await Video.findById(id);
+  if (!video) {
+    return res.sendStatus(404); // 단순 status가 아닌 sendStatus를 사용해야 연결이 끝남.
+  }
+  video.meta.views = video.meta.views + 1; // 메타 데이터의 views 조작
+  await video.save();
+  return res.sendStatus(200);
+};

@@ -4,6 +4,7 @@ const videoSchema = new mongoose.Schema({
   // 스키마 작성
   title: { type: String, required: true, trim: true },
   fileUrl: { type: String, required: true },
+  thumbUrl: { type: String, required: true },
   description: { type: String, required: true, trim: true },
   createdAt: { type: Date, required: true, default: Date.now },
   // create값을 controller에 생성하지 않고 default 값으로 생성

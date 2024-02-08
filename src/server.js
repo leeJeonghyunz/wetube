@@ -6,6 +6,7 @@ import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 import { localMiddleware } from "./middleware";
+import apiRouter from "./routers/apiRouter";
 
 const app = express(); //express application 생성
 const logger = morgan("dev"); // morgan
@@ -30,5 +31,6 @@ app.use("/assets", express.static("assets")); // express.static()을 사용하�
 app.use("/", rootRouter); // rootRouter 생성
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);
+app.use("/api", apiRouter);
 
 export default app;

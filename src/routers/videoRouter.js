@@ -15,7 +15,13 @@ videoRouter
   .route("/upload")
   .all(protectorMiddleware)
   .get(getUpload)
-  .post(videoUpload.single("video"), postUpload);
+  .post(
+    videoUpload.fields([
+      { name: "video", maxCount: 1 }, // maxcount는 파일의 최대 수
+      { name: "thumb", maxCount: 1 },
+    ]), // multer를 fields를 이용하여 사용.
+    postUpload
+  ); // videoUpload middleware를 호출후 postUpload실행
 videoRouter.get("/:id([0-9a-f]{24})", watch); // mongoDB의 정규표현식
 videoRouter
   .route("/:id([0-9a-f]{24})/edit")

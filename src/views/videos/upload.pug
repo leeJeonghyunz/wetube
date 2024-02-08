@@ -1,12 +1,20 @@
 extends ../base
 block content 
-    if errorMessage 
+    div#recordingDiv 
+        video#preview
+        button#startBtn Start Recording
+    if errorMessage  
         span=errorMessage
     form(method="POST" enctype="multipart/form-data")  
         //-form을 multer를 사용하기 위해 multipart/form-data로 인코딩
-        label(for="video" enctype="") 
+        label(for="video" enctype="") Video File
         input(type="file", accept="video/*", required, id="video", name="video" )
+        label(for="video" enctype="") Thumb File
+        input(type="file", accept="image/*", required, id="thumb", name="thumb" )        
         input( name="title", placeholder="Title", required, type="text",)
         input( name="description", placeholder="Description", required, type="text")
         input( name="hashtags", placeholder="Hashtags, separated by comma.", required, type="text")
         input(type="submit", value="Upload Video")
+
+block scripts 
+    script(src="/assets/js/recorder.js") 

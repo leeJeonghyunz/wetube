@@ -13,6 +13,8 @@ const fullScreenBtnIcon = fullScreenBtn.querySelector("i");
 const videoContainer = document.getElementById("videoContainer");
 const videoController = document.getElementById("videoController");
 
+console.log(videoContainer.dataset);
+
 let volumeValue = 0.5; // volumeValue라는 global 변수 선언
 video.volume = volumeValue;
 let timeOutController = null; // 글로벌 변수 생성. 타임아웃 값 입력
@@ -123,6 +125,15 @@ const handleSpacebar = (event) => {
   }
 };
 
+// 조회수 만들기
+const handleEnded = () => {
+  const { id } = videoContainer.dataset; // dataset을 이용하여 id를 가져온다.
+  // fetch를 이용하여 POST요청
+  fetch(`/api/videos/${id}/view`, {
+    method: "POST",
+  });
+};
+
 playBtn.addEventListener("click", handlePlay);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("input", handleVolumeChange);
@@ -131,6 +142,7 @@ video.addEventListener("timeupdate", handleTimeUpdate);
 video.addEventListener("mousemove", handleMouseMove);
 video.addEventListener("mouseleave", handleMouseLeave);
 video.addEventListener("click", handleMouseClick);
-document.addEventListener("keydown", handleSpacebar);
+video.addEventListener("ended", handleEnded);
+document.addEventListener("keydown", handleSpacebar); // document로 해주어야
 timeline.addEventListener("input", handleTimelineChange);
 fullScreenBtn.addEventListener("click", handleFullScreen);

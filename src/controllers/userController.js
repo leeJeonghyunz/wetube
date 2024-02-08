@@ -77,6 +77,7 @@ export const postLogin = async (req, res) => {
       errorMessage: "Password is not correct!",
     });
   }
+
   req.session.loggedIn = true; // session obj에 login true로 변경
   req.session.user = user; // session obj에 user 삽입
   return res.redirect("/");
@@ -167,6 +168,7 @@ export const logout = (req, res) => {
 export const getEdit = (req, res) => {
   return res.render("users/edit-profile", {
     pageTitle: "Edit Profile",
+    avatarUrl: req.session.user.avatarUrl,
   });
 };
 

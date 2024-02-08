@@ -5,6 +5,7 @@ module.exports = {
   entry: {
     main: "./src/client/js/main.js",
     videoPlayer: "./src/client/js/videoPlayer.js",
+    recorder: "./src/client/js/recorder.js",
   },
   // Entry는 우리가 처리하고자 하는 파일. 소스코드를 의미한다.
   // 객체로 관리할 수 있다. 이 방법으로 다른 파일들을 webpack으로 포함시킬 수 있다.

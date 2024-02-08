@@ -19,3 +19,16 @@
     }
   }
 }
+
+#recordingDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  #preview {
+    width: 400px;
+    height: 200px;
+  }
+  #startBtn {
+    margin: 10px;
+  }
+}
