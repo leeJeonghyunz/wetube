@@ -13,6 +13,7 @@ export const protectorMiddleware = (req, res, next) => {
   if (req.session.loggedIn) {
     next();
   } else {
+    req.flash("error", "Not authorized");
     return res.redirect("/login");
   }
 }; // 만약 로그인하지 않은 사람이 접속하면 /login으로 redirect. 로그인을 하였다면 다음동작 수행.
@@ -21,6 +22,7 @@ export const publicOnlyMiddleware = (req, res, next) => {
   if (!req.session.loggedIn) {
     return next();
   } else {
+    req.flash("error", "Not authorized");
     return res.redirect("/");
   }
 }; // 만약 로그인 한 사람이 접속하면 홈으로 redirect

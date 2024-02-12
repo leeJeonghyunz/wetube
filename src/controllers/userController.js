@@ -44,6 +44,7 @@ export const postJoin = async (req, res) => {
       location,
       avatarUrl: file ? file.path : "uploads/avatars/et.jpg", // 이미지 지정 안했을 시 기본이미지.
     });
+    req.flash("info", "Complete");
     return res.redirect("/login");
     // user를 생성하고 login으로 redirect
   } catch (error) {

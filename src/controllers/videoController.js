@@ -1,4 +1,5 @@
 import Video from "../models/Video";
+import Comment from "../models/Comment";
 import User from "../models/User";
 
 export const home = async (req, res) => {
@@ -15,7 +16,8 @@ export const home = async (req, res) => {
 
 export const watch = async (req, res) => {
   const { id } = req.params;
-  const video = await Video.findById(id).populate("owner");
+  const video = await Video.findById(id).populate("owner").populate("comments");
+  console.log(video);
   // id를 통해 video를 검색
   // populate를 통해 mongoose가 User의 정보를 "owner"에 입력해 줌,
 
@@ -37,6 +39,7 @@ export const getEdit = async (req, res) => {
 
   // 만약 video의 owner가 아닌 사람이 edit창을 열려고 하는 것을 방지/=.
   if (String(video.owner) !== _id) {
+    req.flash("error", "Not authorized");
     return res.status(403).redirect("/");
   }
 
@@ -69,8 +72,6 @@ export const postUpload = async (req, res) => {
   } = req.session;
   const { video, thumb } = req.files;
 
-  console.log("*****video****", video);
-  console.log("*****thumb****", thumb);
   const { title, description, hashtags } = req.body;
   try {
     const newVideo = await Video.create({
@@ -108,6 +109,7 @@ export const deleteVideo = async (req, res) => {
 
   // 만약 video의 owner가 아닌 사람이 edit창을 열려고 하는 것을 방지/=.
   if (String(video.owner) !== _id) {
+    req.flash("error", "Not authorized");
     return res.status(403).redirect("/");
   }
 
@@ -141,4 +143,40 @@ export const registerView = async (req, res) => {
   video.meta.views = video.meta.views + 1; // 메타 데이터의 views 조작
   await video.save();
   return res.sendStatus(200);
+};
+
+export const createComment = async (req, res) => {
+  const {
+    session: { user },
+    body: { text },
+    params: { id },
+  } = req;
+
+  // video가 존재하지 않는다면 404 return
+  const video = await Video.findById(id);
+  if (!video) {
+    return res.sendStatus(404);
+  }
+
+  // 새로운 comment 생성
+  const comment = await Comment.create({
+    text,
+    owner: user._id,
+    video: id,
+  });
+  video.comments.push(comment._id); // video.comments 배열에 comment._id를 미리 populate시키고 push시킨다.
+  video.save();
+
+  return res.status(201).json({ newCommentId: comment._id });
+};
+
+// db에서 comment 삭제 controller 생성
+export const deleteComment = async (req, res) => {
+  const { id, videoId } = req.params; // dataset을 이용하여 id와 videoId를 얻음
+  await Comment.findByIdAndDelete(id); // 댓글 삭제
+  const video = await Video.findById(videoId); // Video 검색
+  const index = video.comments.indexOf(id); // video 객체에서 comment 객체의 id로 인덱스를 검색
+  video.comments.splice(index, 1); // index에 해당하는 배열의 index 삭제
+  video.save(); // video 저장
+  return res.sendStatus(201);
 };

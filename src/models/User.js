@@ -9,6 +9,9 @@ const userSchema = new mongoose.Schema({
   password: { type: String },
   name: { type: String, required: true },
   location: String,
+  comments: [
+    { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Comment" },
+  ], // user는 다수의 comment를 array 형식으로 보관
   videos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }], // Array로 구성되어 많은 video를 담을 수 있음.
 });
 

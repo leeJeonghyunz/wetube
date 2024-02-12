@@ -1,11 +1,14 @@
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
+const BASE_JS = "./src/client/js/";
+
 module.exports = {
   entry: {
-    main: "./src/client/js/main.js",
-    videoPlayer: "./src/client/js/videoPlayer.js",
-    recorder: "./src/client/js/recorder.js",
+    main: BASE_JS + "main.js",
+    videoPlayer: BASE_JS + "videoPlayer.js",
+    recorder: BASE_JS + "recorder.js",
+    commentSection: BASE_JS + "commentSection.js",
   },
   // Entry는 우리가 처리하고자 하는 파일. 소스코드를 의미한다.
   // 객체로 관리할 수 있다. 이 방법으로 다른 파일들을 webpack으로 포함시킬 수 있다.
@@ -13,7 +16,7 @@ module.exports = {
   watch: true, // 변경사항을 지속적으로 기억
   output: {
     filename: "js/[name].js",
-    // 앞에 폴더이름을 집어넣어 폴더경로를 다르게 함.
+    // 앞에 폴더이름을  집어넣어 폴더경로를 다르게 함.
     // [name]을 사용하여 여러 파일을 불러올 수 있음.
     path: path.resolve(__dirname, "assets"), // 저장 경로
     clean: true, // 폴더를 자동으로 지움

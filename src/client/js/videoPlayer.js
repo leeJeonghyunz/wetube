@@ -13,8 +13,6 @@ const fullScreenBtnIcon = fullScreenBtn.querySelector("i");
 const videoContainer = document.getElementById("videoContainer");
 const videoController = document.getElementById("videoController");
 
-console.log(videoContainer.dataset);
-
 let volumeValue = 0.5; // volumeValue라는 global 변수 선언
 video.volume = volumeValue;
 let timeOutController = null; // 글로벌 변수 생성. 타임아웃 값 입력

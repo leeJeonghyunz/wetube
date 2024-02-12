@@ -23,22 +23,35 @@ block content
             div 
                 div#fullScreen
                     i.fas.fa-expand
-
-
+    div
+        p=video.description 
+        small=video.createdAt
+    div     
+        small Uploaded By 
+            a(href=`/users/${video.owner._id}`)  #{video.owner.name}
+    br
+    if String(video.owner._id) === String(loggedInUser._id)
+        //- 둘이 형식이 다르므로 String으로 통일
+        a(href=`${video.id}/edit`)   Edit Video &rarr;
+        br
+        br
+        a(href=`${video.id}/delete`)   Delete Video &rarr;
     
-    //- div
-    //-     p=video.description 
-    //-     small=video.createdAt
-    //- div     
-    //-     small Uploaded By 
-    //-         a(href=`/users/${video.owner._id}`)  #{video.owner.name}
-    //- br
-    //- if String(video.owner._id) === String(loggedInUser._id)
-    //-     //- 둘이 형식이 다르므로 String으로 통일
-    //-     a(href=`${video.id}/edit`)   Edit Video &rarr;
-    //-     br
-    //-     br
-    //-     a(href=`${video.id}/delete`)   Delete Video &rarr;
+    if loggedIn
+        div.video__comments
+            form.video__comment-form#commentForm
+                textarea( cols="30", rows="10", placeholder="Write a comment")
+                button Add comment
+    div.video__commentsList
+        //- 댓글목록 생성
+        ul 
+            each comment in video.comments.reverse()
+                //- reverse를 사용하여 역순으로 배치
+                li.video__comment(data-id=comment._id)
+                    span=comment.text
+                    span.deleteCommentBtn(data-id=comment.id)(data-videoId=video.id) ❌
+                        //- dataset 생성
 
 block scripts 
     script(src="/assets/js/videoPlayer.js") 
+    script(src="/assets/js/commentSection.js") 
