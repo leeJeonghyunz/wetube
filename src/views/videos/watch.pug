@@ -3,7 +3,7 @@ extends ../base.pug
 block content 
     div#videoContainer(data-id=video._id)
         //- data attribute 생성
-        video(src="/"+video.fileUrl )
+        video#videoScreen(src="/"+video.fileUrl )
         //- controls를 이용하여 컨트롤 생성
         div#videoController
             div#playBtnDiv
@@ -24,33 +24,44 @@ block content
                 div#fullScreen
                     i.fas.fa-expand
     div
-        p=video.description 
-        small=video.createdAt
-    div     
-        small Uploaded By 
-            a(href=`/users/${video.owner._id}`)  #{video.owner.name}
+        p#watch__title=video.title
+        div#watch__ownerBox
+            div
+                a(href=`/users/${video.owner._id}`) 
+                    img(src="/" + video.owner.avatarUrl).header__avatar   
+                small 
+                    a(href=`/users/${video.owner._id}`)  #{video.owner.name}                 
+                    i.far.fa-circle-check
+            if String(video.owner._id) === String(loggedInUser._id)
+                //- 둘이 형식이 다르므로 String으로 통일
+                div
+                    a(href=`${video.id}/edit`)   Edit Video &rarr;  &nbsp;
+                    br
+                    br
+                    a(href=`${video.id}/delete`)   Delete Video &rarr;    
+        div#watch__infoBox
+            small 조회수 #{video.meta.views}
+            small=video.createdAt
+            p=video.description 
     br
-    if String(video.owner._id) === String(loggedInUser._id)
-        //- 둘이 형식이 다르므로 String으로 통일
-        a(href=`${video.id}/edit`)   Edit Video &rarr;
-        br
-        br
-        a(href=`${video.id}/delete`)   Delete Video &rarr;
-    
-    if loggedIn
-        div.video__comments
-            form.video__comment-form#commentForm
-                textarea( cols="30", rows="10", placeholder="Write a comment")
-                button Add comment
-    div.video__commentsList
-        //- 댓글목록 생성
-        ul 
-            each comment in video.comments.reverse()
-                //- reverse를 사용하여 역순으로 배치
-                li.video__comment(data-id=comment._id)
-                    span=comment.text
-                    span.deleteCommentBtn(data-id=comment.id)(data-videoId=video.id) ❌
-                        //- dataset 생성
+    span#commentCount 댓글 #{video.comments.length}개
+    div#commentContainer
+        if loggedIn
+            div.video__comments
+                form.video__comment-form#commentForm
+                    img(src="/" + loggedInUser.avatarUrl).header__avatar   
+                    textarea( cols="30", rows="10", placeholder="Write a comment")
+                    button Add comment
+        div.video__commentsList
+            //- 댓글목록 생성
+            ul 
+                each comment in video.comments.reverse()
+                    //- reverse를 사용하여 역순으로 배치
+                    li.video__comment(data-id=comment._id)
+                        span=comment.text
+                        if String(loggedInUser._id) === String(comment.owner)
+                            span.deleteCommentBtn(data-id=comment.id)(data-videoId=video.id) ❌
+                                    //- dataset 생성
 
 block scripts 
     script(src="/assets/js/videoPlayer.js") 

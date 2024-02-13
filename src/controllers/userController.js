@@ -265,12 +265,15 @@ export const postChangePassword = async (req, res) => {
 
 export const see = async (req, res, next) => {
   const { id } = req.params;
+  const videos = await Video.find({});
   const user = await User.findById(id).populate({
     path: "videos", // 가장 먼저 populate 하고 싶은 것
     populate: {
       path: "owner", // 다음으로 populate할 것
     },
   });
+  console.log(videos);
+
   if (!user) {
     res.status(404).render("404", { pageTitle: "User Not Found" });
   }
@@ -278,5 +281,6 @@ export const see = async (req, res, next) => {
   return res.render("users/profile", {
     pageTitle: `${user.name} Profile`,
     user,
+    videos,
   });
 };

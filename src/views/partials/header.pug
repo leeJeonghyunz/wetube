@@ -18,8 +18,6 @@ header
                     a(href=`/users/${loggedInUser._id}`) 
                         if (loggedInUser.avatarUrl)
                             img(src="/" + loggedInUser.avatarUrl).header__avatar
-                        else 
-                            span 😀
             else 
                 li 
                     a(href="/login") Login        

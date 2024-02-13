@@ -8,7 +8,11 @@ export const home = async (req, res) => {
       .sort({ createdAt: "desc" })
       .populate("owner");
     // createdAt 순서대로 내림차순
-    return res.render("home", { pageTitle: "Home", videos });
+    console.log(videos);
+    return res.render("home", {
+      pageTitle: "Home",
+      videos,
+    });
   } catch {
     return res.render("server-error");
   }
@@ -17,7 +21,6 @@ export const home = async (req, res) => {
 export const watch = async (req, res) => {
   const { id } = req.params;
   const video = await Video.findById(id).populate("owner").populate("comments");
-  console.log(video);
   // id를 통해 video를 검색
   // populate를 통해 mongoose가 User의 정보를 "owner"에 입력해 줌,
 
@@ -26,6 +29,7 @@ export const watch = async (req, res) => {
   } else {
     res.render("videos/watch", { pageTitle: video.title, video });
   }
+  console.log(video);
 };
 
 export const getEdit = async (req, res) => {

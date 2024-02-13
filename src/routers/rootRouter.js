@@ -5,7 +5,7 @@ import {
   postJoin,
   postLogin,
 } from "../controllers/userController";
-import { search, home } from "../controllers/videoController";
+import { search, home, sidebar } from "../controllers/videoController";
 import { avatarUpload, publicOnlyMiddleware } from "../middleware";
 
 const rootRouter = express.Router();
