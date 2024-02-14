@@ -8,7 +8,6 @@ export const home = async (req, res) => {
       .sort({ createdAt: "desc" })
       .populate("owner");
     // createdAt 순서대로 내림차순
-    console.log(videos);
     return res.render("home", {
       pageTitle: "Home",
       videos,
@@ -29,7 +28,6 @@ export const watch = async (req, res) => {
   } else {
     res.render("videos/watch", { pageTitle: video.title, video });
   }
-  console.log(video);
 };
 
 export const getEdit = async (req, res) => {

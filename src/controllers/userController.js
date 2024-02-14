@@ -272,7 +272,6 @@ export const see = async (req, res, next) => {
       path: "owner", // 다음으로 populate할 것
     },
   });
-  console.log(videos);
 
   if (!user) {
     res.status(404).render("404", { pageTitle: "User Not Found" });
