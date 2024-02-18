@@ -42,7 +42,7 @@ export const postJoin = async (req, res) => {
       email,
       password,
       location,
-      avatarUrl: file ? file.path : "uploads/avatars/et.jpg", // 이미지 지정 안했을 시 기본이미지.
+      avatarUrl: file ? file.location : "uploads/avatars/et.jpg", // 이미지 지정 안했을 시 기본이미지.
     });
     req.flash("info", "Complete");
     return res.redirect("/login");
@@ -182,8 +182,9 @@ export const postEdit = async (req, res) => {
     body: { name, email, username, location }, // form의 name, email, username, location
     file,
   } = req;
+  console.log(file);
 
-  const filePath = file ? file.path : null; // file이 있다면 filePath에 삽입
+  const filePath = file ? file.location : null; // file이 있다면 filePath에 삽입
 
   // 1.이름을 바꿨을때 해당 이름의 유저가 있는지 확인한다.
   const findUserName = await User.findOne({ username });
@@ -214,7 +215,7 @@ export const postEdit = async (req, res) => {
   const updateUser = await User.findByIdAndUpdate(
     _id,
     {
-      avatarUrl: file ? file.path : avatarUrl, // avatarUrl에 새로 입력값이 없으면 기존의 avatarUrl을 작성하고 아니면 path의 내용을 입력
+      avatarUrl: file ? file.location : avatarUrl, // avatarUrl에 새로 입력값이 없으면 기존의 avatarUrl을 작성하고 아니면 path의 내용을 입력
       name,
       email,
       username,

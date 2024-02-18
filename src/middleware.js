@@ -5,6 +5,20 @@ const multerS3 = require("multer-s3");
 
 const app = express();
 
+const s3 = new S3Client({
+  region: "ap-northeast-2",
+  credentials: {
+    accessKeyId: process.env.AWS_ID,
+    secretAccessKey: process.env.AWS_SECRET,
+  },
+});
+
+const multerUploader = multerS3({
+  s3: s3,
+  bucket: "wetubeljh",
+  acl: "public-read",
+});
+
 export const localMiddleware = (req, res, next) => {
   res.locals.loggedIn = Boolean(req.session.loggedIn); // req.session.loggedin 값을 locals.loggedIn 값에 전달
   res.locals.siteName = "wetube";
@@ -37,6 +51,7 @@ export const avatarUpload = multer({
   limits: {
     fileSize: 3000000, // 파일 크기 제한
   },
+  storage: multerUploader,
 }); // 사용자가 보낸 파일을 uploads 폴더에 저장한다.
 
 export const videoUpload = multer({
