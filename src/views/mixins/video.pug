@@ -5,8 +5,15 @@ mixin video(video)
                 div.video-mixin__thumb(style=`background-image:url(/${video.thumbUrl});background-size:cover;background-position:center`)
             else
                 div.video-mixin__thumb(style=`background-image:url(${video.thumbUrl});background-size:cover;background-position:center`)
-            div.video-mixin__data
-                span.video-mixin__title=video.title
-                div.video-mixin__meta
-                    span #{video.title} • 
-                    span #{video.meta.views} 회
+            div.video-mixin__info    
+                div#avatar__Div
+                    a(href=`/users/${video.owner._id}`) 
+                        if !isRender
+                            img(src="/" + video.owner.avatarUrl).header__avatar   
+                        else
+                            img(src=video.owner.avatarUrl).header__avatar   
+                div.video-mixin__data
+                    span.video-mixin__title=video.title
+                    div.video-mixin__meta
+                        span #{video.owner.name} • 
+                        span 조회수 #{video.meta.views}  회
