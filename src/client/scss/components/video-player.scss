@@ -30,6 +30,7 @@
       display: flex;
       justify-content: center;
       width: 2%;
+      cursor: pointer;
     }
     #timeDiv {
       color: white;
@@ -42,6 +43,7 @@
         width: 100%;
         #timeline {
           width: 100%;
+          cursor: pointer;
         }
       }
     }
@@ -49,12 +51,18 @@
       display: flex;
       color: white;
       width: 20%;
+      cursor: pointer;
       #mute {
         width: 10%;
+        cursor: pointer;
       }
       #volume {
         width: 80%;
+        cursor: pointer;
       }
+    }
+    #fullScreen {
+      cursor: pointer;
     }
   }
 }

@@ -3,7 +3,10 @@ extends ../base.pug
 block content 
     div#videoContainer(data-id=video._id)
         //- data attribute 생성
-        video#videoScreen(src="/"+video.fileUrl )
+        if !isRender
+            video#videoScreen(src="/"+video.fileUrl )
+        else 
+            video#videoScreen(src=video.fileUrl )
         //- controls를 이용하여 컨트롤 생성
         div#videoController
             div#playBtnDiv
@@ -28,7 +31,10 @@ block content
         div#watch__ownerBox
             div
                 a(href=`/users/${video.owner._id}`) 
-                    img(src="/" + video.owner.avatarUrl).header__avatar   
+                    if !isRender
+                        img(src="/" + video.owner.avatarUrl).header__avatar   
+                    else
+                        img(src=video.owner.avatarUrl).header__avatar   
                 small 
                     a(href=`/users/${video.owner._id}`)  #{video.owner.name}                 
                     i.far.fa-circle-check
@@ -49,7 +55,10 @@ block content
         if loggedIn
             div.video__comments
                 form.video__comment-form#commentForm
-                    img(src="/" + loggedInUser.avatarUrl).header__avatar   
+                    if !isRender
+                        img(src="/" + loggedInUser.avatarUrl).header__avatar   
+                    else
+                        img(src=video.owner.avatarUrl).header__avatar   
                     textarea( cols="30", rows="10", placeholder="Write a comment")
                     button Add comment
         div.video__commentsList
