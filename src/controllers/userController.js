@@ -2,6 +2,10 @@ import User from "../models/User";
 import Video from "../models/Video";
 import bcrypt from "bcrypt";
 
+const isRender = process.env.NODE_ENV === "production";
+const etImage =
+  "https://wetubeljh.s3.ap-northeast-2.amazonaws.com/images/1708261565220-et.jpg";
+
 export const getJoin = (req, res) => {
   res.render("join", { pageTitle: "Join" });
 };
@@ -42,7 +46,11 @@ export const postJoin = async (req, res) => {
       email,
       password,
       location,
-      avatarUrl: file ? file.location : "uploads/avatars/et.jpg", // 이미지 지정 안했을 시 기본이미지.
+      avatarUrl: isRender
+        ? file
+          ? file.location
+          : etImage
+        : "uploads/avatars/et.jpg", // 이미지 지정 안했을 시 기본이미지.
     });
     req.flash("info", "Complete");
     return res.redirect("/login");
@@ -215,7 +223,6 @@ export const postEdit = async (req, res) => {
     });
   }
 
-  const isRender = process.env.NODE_ENV === "production";
   const updateUser = await User.findByIdAndUpdate(
     _id,
     {
