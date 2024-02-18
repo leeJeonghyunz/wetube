@@ -4,6 +4,8 @@ block content
     div.edit-profile__wrapper
         if !isRender
             img(src="/" + loggedInUser.avatarUrl, alt="" width="100", height="100")
+        else 
+            img(src= loggedInUser.avatarUrl, alt="" width="100", height="100")
         if errorMessage 
             span=errorMessage
         form(method="POST", enctype="multipart/form-data").edit-profile__form
