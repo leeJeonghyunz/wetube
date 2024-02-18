@@ -85,6 +85,7 @@ export const postLogin = async (req, res) => {
 };
 
 export const startGithubLogin = (req, res) => {
+  console.log("start");
   const baseUrl = `https://github.com/login/oauth/authorize`; // 깃헙 oauth에서 제공하는 링크
   const config = {
     client_id: process.env.GH_CLIENT,
@@ -92,7 +93,9 @@ export const startGithubLogin = (req, res) => {
     scope: "read:user user:email",
   }; // client _id와 scope등을 담은 config 작성
   const params = new URLSearchParams(config).toString(); // urlSearchparams를 이용하여 config파일을 params로 만들고 string()화
+  console.log(params);
   const finalUrl = `${baseUrl}?${params}`; // url작성
+  console.log(finalUrl);
   return res.redirect(finalUrl);
 };
 
@@ -212,10 +215,11 @@ export const postEdit = async (req, res) => {
     });
   }
 
+  const isRender = process.env.NODE_ENV === "production";
   const updateUser = await User.findByIdAndUpdate(
     _id,
     {
-      avatarUrl: file ? file.location : avatarUrl, // avatarUrl에 새로 입력값이 없으면 기존의 avatarUrl을 작성하고 아니면 path의 내용을 입력
+      avatarUrl: file ? (isRender ? file.location : file.path) : avatarUrl, // avatarUrl에 새로 입력값이 없으면 기존의 avatarUrl을 작성하고 아니면 path의 내용을 입력
       name,
       email,
       username,

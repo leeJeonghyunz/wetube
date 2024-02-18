@@ -2,6 +2,8 @@ import Video from "../models/Video";
 import Comment from "../models/Comment";
 import User from "../models/User";
 
+const isRender = process.env.NODE_ENV === "production";
+
 export const home = async (req, res) => {
   try {
     const videos = await Video.find({})
@@ -74,21 +76,27 @@ export const postUpload = async (req, res) => {
   } = req.session;
   const { video, thumb } = req.files;
 
+  console.log("file:", req.files);
+
   const { title, description, hashtags } = req.body;
+
   try {
     const newVideo = await Video.create({
       // Video 모델을 이용하여 video 제작, newVideo는 제작된 video값을 return
       title,
       description,
       createdAt: Date.now(),
-      fileUrl: video[0].path, // req.files.video의 path
-      thumbUrl: thumb[0].path.replace(/[\\]/g, "/"), // req.files.thumb의 path
+      fileUrl: isRender ? video[0].location : video[0].path, // req.files.video의 s3 파일 주소
+      thumbUrl: isRender
+        ? thumb[0].location
+        : thumb[0].path.replace(/[\\]/g, "/"), // req.files.thumb의 s3 파일 주소
       hashtags: Video.formatHashtags(hashtags), // Video model에서 만든 formatHashtags 함수를 import
       owner: _id, // video의 owner 파악
     });
     const user = await User.findById(_id);
     user.videos.push(newVideo._id); // User모델에 있는 배열에 _id를 push한다.
     user.save();
+    console.log("ok");
     res.redirect("/");
   } catch (error) {
     console.log(error);
