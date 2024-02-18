@@ -182,6 +182,7 @@ export const postEdit = async (req, res) => {
     body: { name, email, username, location }, // form의 name, email, username, location
     file,
   } = req;
+
   const filePath = file ? file.path : null; // file이 있다면 filePath에 삽입
 
   // 1.이름을 바꿨을때 해당 이름의 유저가 있는지 확인한다.

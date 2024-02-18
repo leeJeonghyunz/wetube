@@ -1,4 +1,9 @@
-import multer from "multer";
+const { S3Client } = require("@aws-sdk/client-s3");
+const express = require("express");
+const multer = require("multer");
+const multerS3 = require("multer-s3");
+
+const app = express();
 
 export const localMiddleware = (req, res, next) => {
   res.locals.loggedIn = Boolean(req.session.loggedIn); // req.session.loggedin 값을 locals.loggedIn 값에 전달
