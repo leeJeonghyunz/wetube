@@ -58,7 +58,7 @@ block content
                     if !isRender
                         img(src="/" + loggedInUser.avatarUrl).header__avatar   
                     else
-                        img(src=video.owner.avatarUrl).header__avatar   
+                        img(src=loggedInUser.avatarUrl).header__avatar   
                     textarea( cols="30", rows="10", placeholder="Write a comment")
                     button Add comment
         div.video__commentsList
